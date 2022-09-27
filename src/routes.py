@@ -5,8 +5,8 @@ import uuid
 from datetime import datetime, timedelta
 from . import app
 from src.libs.validation_file import allowed_file
-from src.repository import users, pics
-# TODO: better `from src import repository` => repository.user
+from src.repository import pictures as rep_pict
+from src.repository import users as rep_users
 
 
 @app.before_request
@@ -16,7 +16,7 @@ def before_func():
     if not auth:
         token_user = request.cookies.get('username')
         if token_user:
-            user = users.get_user_by_token(token_user)
+            user = rep_users.get_user_by_token(token_user)
             if user:
                 session['username'] = {"username": user.username, "id": user.id}
 
@@ -38,7 +38,7 @@ def pictures():
     auth = True if 'username' in session else False
     if not auth:
         return redirect(request.url)  # return from where it was
-    pictures_user = pics.get_all_pictures(session['username']['id'])
+    pictures_user = rep_pict.get_all_pictures(session['username']['id'])
     return render_template('pages/pictures.html', auth=auth, pictures=pictures_user)
 
 
@@ -49,7 +49,7 @@ def registration():
         email = request.form.get('email')
         password = request.form.get('password')
         nick = request.form.get('nick')
-        user = users.create_user(email, password, nick)
+        user = rep_users.create_user(email, password, nick)
         # print(user)
         return redirect(url_for('login'))
     if auth:
@@ -67,7 +67,7 @@ def login():
         remember = True if request.form.get('remember') == 'on' else False
         # remember: None - unchecked, 'on' - checked
 
-        user = users.login(email, password)
+        user = rep_users.login(email, password)
         print(user)
         if user is None:
             return redirect(url_for('login'))
@@ -77,7 +77,7 @@ def login():
             token = str(uuid.uuid4())
             expire_data = datetime.now() + timedelta(days=60)
             response.set_cookie('username', token, expires=expire_data)
-            users.set_token(user, token)
+            rep_users.set_token(user, token)
         return response
     if auth:
         return redirect(url_for('index'))
@@ -115,7 +115,7 @@ def pictures_upload():
             filename = secure_filename(file.filename)
             file_path = pathlib.Path(app.config['UPLOAD_FOLDER']) / filename
             file.save(file_path)
-            pics.upload_file_for_user(session['username']['id'], file_path, description)
+            rep_pict.upload_file_for_user(session['username']['id'], file_path, description)
             flash('Picture has been uploaded successfully')
             return redirect(url_for('pictures_upload'))
     return render_template('pages/upload.html', auth=auth)
@@ -128,10 +128,10 @@ def edit_picture(pict_id):
     if not auth:
         return redirect(request.url)
     user_id = session['username']['id']
-    picture = pics.get_one_picture(pict_id, user_id)
+    picture = rep_pict.get_one_picture(pict_id, user_id)
     if request.method == 'POST':
         description = request.form.get('description')
-        pics.update_picture(pict_id, user_id, description)
+        rep_pict.update_picture(pict_id, user_id, description)
         return redirect(url_for('pictures'))
     return render_template('pages/edit.html', auth=auth, picture=picture)
 
@@ -142,7 +142,7 @@ def delete(pict_id):
     if not auth:
         return redirect(request.url)
     if request.method == 'POST':
-        if pics.delete_picture(pict_id, session['username']['id']):
+        if rep_pict.delete_picture(pict_id, session['username']['id']):
             flash('Picture has been deleted successfully')
         else:
             flash('Wrong path to the picture!', category="error")
