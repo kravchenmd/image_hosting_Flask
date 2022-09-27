@@ -3,10 +3,12 @@ from werkzeug.utils import secure_filename
 import pathlib
 import uuid
 from datetime import datetime, timedelta
+from marshmallow import ValidationError
 from . import app
 from src.libs.validation_file import allowed_file
 from src.repository import pictures as rep_pict
 from src.repository import users as rep_users
+from src.libs.validation_sсhemas import RegistrationSchema, LoginSchema
 
 
 @app.before_request
@@ -46,6 +48,10 @@ def pictures():
 def registration():
     auth = True if 'username' in session else False
     if request.method == 'POST':
+        try:
+            RegistrationSchema().load(request.form)
+        except ValidationError as err:
+            return render_template('pages/registration.html', messages=err.messages)
         email = request.form.get('email')
         password = request.form.get('password')
         nick = request.form.get('nick')
@@ -62,6 +68,10 @@ def registration():
 def login():
     auth = True if 'username' in session else False
     if request.method == 'POST':
+        try:
+            LoginSchema().load(request.form)
+        except ValidationError as err:
+            return render_template('pages/login.html', messages=err.messages)
         email = request.form.get('email')
         password = request.form.get('password')
         remember = True if request.form.get('remember') == 'on' else False
