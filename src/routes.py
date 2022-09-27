@@ -30,6 +30,7 @@ def healthcheck():
 def index():
     auth = True if 'username' in session else False
     print(auth)
+    print(session['username']['id'], type(session['username']['id']))
     return render_template('pages/index.html', title='Cloud Pictures', auth=auth)
 
 
@@ -104,17 +105,19 @@ def pictures_upload():
         return redirect(request.url)
     if request.method == 'POST':
         description = request.form.get('description')
-        print(description)
         if 'photo' not in request.files:
             flash('No file part')
             return redirect(request.url)
         file = request.files['photo']
         if file.filename == '':
-            flash('No selected file')
+            flash('No selected file!', category="error")
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(pathlib.Path(app.config['UPLOAD_FOLDER']) / filename)
+            file_path = pathlib.Path(app.config['UPLOAD_FOLDER']) / filename
+            file.save(file_path)
+            pics.upload_file_for_user(session['username']['id'], file_path, description)
+            flash('Picture has been uploaded successfully')
             return redirect(url_for('pictures_upload'))
     return render_template('pages/upload.html', auth=auth)
 
