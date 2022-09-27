@@ -1,6 +1,6 @@
 .env
-data/*
-uploads/*
+data/
+uploads/
 
 # Pycharm
 *.idea/
