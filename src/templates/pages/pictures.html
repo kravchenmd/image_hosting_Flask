@@ -5,6 +5,13 @@
   <div class="row mb-3">
     <h1>Your pictures</h1>
   </div>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-info">{{message}}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
   <div class="row">
     {% for pict in pictures %}
     <div class="col-md-4">
