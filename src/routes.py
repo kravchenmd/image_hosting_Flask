@@ -132,7 +132,7 @@ def pictures_upload():
 
 
 @app.route('/pictures/edit/<pict_id>', methods=['GET', 'POST'], strict_slashes=False)
-def edit_picture(pict_id):
+def edit_picture(pict_id: int):
     """ Edit description of a picture """
     auth = True if 'username' in session else False
     if not auth:
@@ -147,7 +147,7 @@ def edit_picture(pict_id):
 
 
 @app.route('/pictures/delete/<pict_id>', methods=['POST'], strict_slashes=False)
-def delete(pict_id):
+def delete(pict_id: int):
     auth = True if 'username' in session else False
     if not auth:
         return redirect(request.url)
