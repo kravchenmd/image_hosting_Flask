@@ -30,7 +30,6 @@ def healthcheck():
 def index():
     auth = True if 'username' in session else False
     print(auth)
-    print(session['username']['id'], type(session['username']['id']))
     return render_template('pages/index.html', title='Cloud Pictures', auth=auth)
 
 
@@ -51,7 +50,7 @@ def registration():
         password = request.form.get('password')
         nick = request.form.get('nick')
         user = users.create_user(email, password, nick)
-        print(user)
+        # print(user)
         return redirect(url_for('login'))
     if auth:
         return redirect(url_for('index'))
