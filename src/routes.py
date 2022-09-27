@@ -136,9 +136,14 @@ def edit_picture(pict_id):
     return render_template('pages/edit.html', auth=auth, picture=picture)
 
 
-@app.route('/pictures/delete/<id>', methods=['POST'], strict_slashes=False)
-def delete():
+@app.route('/pictures/delete/<pict_id>', methods=['POST'], strict_slashes=False)
+def delete(pict_id):
     auth = True if 'username' in session else False
     if not auth:
         return redirect(request.url)
-    return render_template('pages/edit.html', auth=auth)
+    if request.method == 'POST':
+        if pics.delete_picture(pict_id, session['username']['id']):
+            flash('Picture has been deleted successfully')
+        else:
+            flash('Wrong path to the picture!', category="error")
+    return redirect(url_for('pictures'))

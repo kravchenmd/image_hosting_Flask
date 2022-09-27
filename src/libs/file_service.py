@@ -16,3 +16,11 @@ def move_picture(user_subfolder: str, file_path: Path) -> tuple[str, int]:
     size = file.stat().st_size
     file_name_for_db = f"/static/{user_subfolder}/{file.name}"  # relative to `static` path for the DB
     return file_name_for_db, size
+
+
+def delete_user_pic(file_path: str) -> None:
+    filename = Path(f"{BASE_DIR}/src{file_path}")
+    try:
+        filename.unlink()
+    except FileNotFoundError:
+        raise
