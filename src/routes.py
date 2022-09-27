@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime, timedelta
 from marshmallow import ValidationError
 from . import app
-from src.libs.validation_file import allowed_file
+from src.libs.validation_file import is_allowed_filename
 from src.repository import pictures as rep_pict
 from src.repository import users as rep_users
 from src.libs.validation_sсhemas import RegistrationSchema, LoginSchema
@@ -121,7 +121,7 @@ def pictures_upload():
         if file.filename == '':
             flash('No selected file!', category="error")
             return redirect(request.url)
-        if file and allowed_file(file.filename):
+        if file and is_allowed_filename(file.filename):
             filename = secure_filename(file.filename)
             file_path = pathlib.Path(app.config['UPLOAD_FOLDER']) / filename
             file.save(file_path)
