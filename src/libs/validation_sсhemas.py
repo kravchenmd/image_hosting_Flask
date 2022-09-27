@@ -10,4 +10,4 @@ class RegistrationSchema(Schema):
 class LoginSchema(Schema):
     remember = fields.Str()
     email = fields.Email(required=True)
-    password = fields.Str(validate=validate.Length(min=6), required=True)
+    password = fields.Str(validate=validate.Length(min=3), required=True)
