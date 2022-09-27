@@ -38,7 +38,7 @@ def pictures():
     auth = True if 'username' in session else False
     if not auth:
         return redirect(request.url)  # return from where it was
-    pictures_user = pics.get_pictures_user(session['username']['id'])
+    pictures_user = pics.get_all_pictures(session['username']['id'])
     return render_template('pages/pictures.html', auth=auth, pictures=pictures_user)
 
 
@@ -121,12 +121,19 @@ def pictures_upload():
     return render_template('pages/upload.html', auth=auth)
 
 
-@app.route('/pictures/edit/<id>', methods=['GET', 'POST'], strict_slashes=False)
-def edit():
+@app.route('/pictures/edit/<pict_id>', methods=['GET', 'POST'], strict_slashes=False)
+def edit_picture(pict_id):
+    """ Edit description of a picture """
     auth = True if 'username' in session else False
     if not auth:
         return redirect(request.url)
-    return render_template('pages/edit.html', auth=auth)
+    user_id = session['username']['id']
+    picture = pics.get_one_picture(pict_id, user_id)
+    if request.method == 'POST':
+        description = request.form.get('description')
+        pics.update_picture(pict_id, user_id, description)
+        return redirect(url_for('pictures'))
+    return render_template('pages/edit.html', auth=auth, picture=picture)
 
 
 @app.route('/pictures/delete/<id>', methods=['POST'], strict_slashes=False)
