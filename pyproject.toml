@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "module-12"
+name = "module-11-flask"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
-packages = [{include = "module_12"}]
+packages = [{include = "module_11_Flask"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
