@@ -2,7 +2,7 @@
 
 ## Description
 
-A demo web application for hosting pictures of user on **Flask**, with following features:
+Web application for hosting pictures of user on **Flask**, with following features:
 
 - The app has a very simple front-end part (but not so poor back-end) basen on HTML templates rendered by `Jinja2` (
   without fully adaptive layout)
