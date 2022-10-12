@@ -7,7 +7,7 @@ A demo web application for hosting pictures of user on **Flask**, with following
 - The app has a very simple front-end part (but not so poor back-end) basen on HTML templates rendered by `Jinja2` (
   without fully adaptive layout)
 
-- Data is stored using **SQLite** DB (created and managed using `flash_sqlalchemy` and `flask_migrate`). ER Diagram of
+- Data is stored using **SQLite** DB (created and managed using `flask_sqlalchemy` and `flask_migrate`). ER Diagram of
   the DB model:
 
 ![DB_ER_Diagram](readme_img/db_diagram.png)
@@ -25,6 +25,8 @@ hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt(rounds=10))
 - Uploaded pictures are stores statically in a corresponding to the user folder:
 
 ![static](readme_img/static.png)
+
+- "remember me" function is implemented using cookies (`response.set_cookie`)
 
 ## Examples of different pages
 
